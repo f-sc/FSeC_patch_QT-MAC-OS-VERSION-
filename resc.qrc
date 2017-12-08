@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>img/back.bmp</file>
+        <file>img/black.png</file>
+        <file>img/forw.bmp</file>
+        <file>img/goto.bmp</file>
+        <file>img/goto.png</file>
+        <file>img/gotp.png</file>
+        <file>img/open — копия.bmp</file>
+        <file>img/open.bmp</file>
+        <file>img/open.png</file>
+        <file>img/save.bmp</file>
+        <file>img/search.png</file>
+        <file>img/htb.png</file>
+    </qresource>
+</RCC>
