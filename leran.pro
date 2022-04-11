@@ -13,11 +13,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
+    HexTableModel.cpp \
         mainwindow.cpp \
     patch.cpp \
     update.cpp
 
 HEADERS  += mainwindow.h \
+    HexTableModel.h \
+    HexTableView.h \
     patch.h \
     update.h
 

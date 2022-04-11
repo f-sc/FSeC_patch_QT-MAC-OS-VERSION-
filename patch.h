@@ -27,6 +27,7 @@ class patch: public QObject
     QList<item> search_exclude;
     QList<QPoint> tempS_list;
     QPoint current_add;
+    QList<QPoint> m_changedData;
     QString filename;
     QMainWindow *ui;
 public:

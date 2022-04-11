@@ -9,7 +9,7 @@ void patch::load_file(QString filename)
     if(file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         this->data.clear();
-        this->search_exclude.clear();
+        //this->tbSearch_exclude.clear();
         this->current_add = QPoint(0,0);
         this->filename = file.fileName();
         while(!file.atEnd())
@@ -27,7 +27,7 @@ void patch::load_file(QString filename)
     {
         msg.setText("<font color='white'>Error while opening file "+ file.fileName() +"</font>");
     }
-   // msg.exec();
+    //msg.exec();
 }
 
 void patch::add_item(QByteArray value)
@@ -38,11 +38,11 @@ void patch::add_item(QByteArray value)
     {
         if(data.length()<1)
         {
-          current_add.setX(0);
+            current_add.setX(0);
         }
         else
         {
-        current_add.setX(current_add.x()+1);
+            current_add.setX(current_add.x()+1);
         }
     }
     else
@@ -53,7 +53,7 @@ void patch::add_item(QByteArray value)
     temp.offset.setX(current_add.x());
     temp.offset.setY(current_add.y());
     //
-   // qDebug() << "add_item" << temp.offset.x() << " : " << temp.offset.y() << temp.item_t;
+    // qDebug() << "add_item" << temp.offset.x() << " : " << temp.offset.y() << temp.item_t;
     data.push_back(temp);
 }
 
@@ -64,63 +64,72 @@ QList<item> patch::all_items()
 
 void patch::draw()
 {
-   // window->data_table
+    // window->data_table
 }
 
 void patch::save_file()
 {
+    QFile fileToSave(filename);
+    if(fileToSave.open(QIODevice::ReadWrite)) {
+        for(QPoint temp : m_changedData) {
+            int offset = ((temp.y() + 1) * 16) - (15 - temp.x());
+            qDebug() << "Will save: " << offset;
+            //fileToSave.seek(temp.offset.x() * temp.offset)
+        }
+        fileToSave.close();
+    }
+}
+
+/*void patch::save_file()
+{
     int ts =0;
-    QFile file(this->filename);
-    if(file.open(QIODevice::WriteOnly | QIODevice::Truncate)){
+    QFile file(filename);
+    if(file.open(QIODevice::ReadWrite | QIODevice::Truncate)){
         file.seek(0);
         QDataStream out(&file);
-     for(int i=0; i<data.length(); i++)
-     {
-        // qDebug() << temp.item_t;
-         if(ts!=16)
-         {
-        // file.write(data[i].item_t);
-            QByteArray temps = (convert((data[i].item_t).toStdString().c_str(), data_type::strS).simplified());
-           // qDebug() << temps << "::" << data[i].offset.x() << "::y::" << data[i].offset.y();
-            file.write(temps);
-            ts++;
-           // out << temps;
-           // qDebug(temps.length());
-         }
-         else
-         {
-             file.write("\n");
-             ts = 0;
-         }
-     }
-     qDebug() << "Saved";
+        for(int i = 0; i < data.length(); i++)
+        {
+            if(ts != 16)
+            {
+                QByteArray temps = (convert((data[i].item_t).toStdString().c_str(), data_type::strS).simplified());
+                file.write(temps);
+                ts++;
+            }
+            else
+            {
+                file.write("\n");
+                ts = 0;
+            }
+        }
+        qDebug() << "Saved " << filename;
     }
     else
     {
         qDebug() << "\nError while opening output file\n";
     }
-}
+}*/
 
 void patch::change_item(QByteArray value, QPoint offset)
 {
-   // qDebug() << "Offset:" << offset.x() << " " << offset.y();
-   // qDebug() << "Request :" << value << " at offset: " << offset.x() << " : " << offset.y();
+    // qDebug() << "Offset:" << offset.x() << " " << offset.y();
+    // qDebug() << "Request :" << value << " at offset: " << offset.x() << " : " << offset.y();
     for(int i=0; i<this->data.length(); i++)
     {
-       // qDebug() << "Request :" << this->data.at(i).item_t << " at offset: " << this->data.at(i).offset.x() << " : " << this->data.at(i).offset.y() << ":" << value;
+        // qDebug() << "Request :" << this->data.at(i).item_t << " at offset: " << this->data.at(i).offset.x() << " : " << this->data.at(i).offset.y() << ":" << value;
         if(this->data.at(i).offset == offset)
         {
             if(backup.length()>5)
             {
                 this->backup.clear();
             }
-               this->backup.push_back(this->data[i]);
-               //qDebug() << "Data val:" << this->data.at(i).item_t<< "\n";
+            this->backup.push_back(this->data[i]);
+            //qDebug() << "Data val:" << this->data.at(i).item_t<< "\n";
 
 
             this->data[i].item_t = value;
+            m_changedData.push_back(offset);
 
-           // qDebug() << "Changed A:" << value << " at offset: " << offset.x() << " : " << offset.y();
+            // qDebug() << "Changed A:" << value << " at offset: " << offset.x() << " : " << offset.y();
         }
     }
 }
@@ -134,13 +143,13 @@ item patch::cz(bool ctrlz)
             if(temp.offset == backup.last().offset)
             {
                 temp = backup.last();
-               // qDebug() << "Backup size: " << backup.size();
+                // qDebug() << "Backup size: " << backup.size();
                 temp.error = false;
                 backup.removeLast();
                 return temp;
-               // break;
+                // break;
             }
-           // return NULL;
+            // return NULL;
         }
     }
     else
@@ -220,13 +229,13 @@ QByteArray patch::convert(QByteArray data, data_type type)
 {
     switch(type)
     {
-      /*case data_type::dec10:
+    /*case data_type::dec10:
         return
         break;*/
-      case data_type::hex16:
+    case data_type::hex16:
         return data.toHex();
         break;
-      case data_type::strS:
+    case data_type::strS:
         return QByteArray::fromHex(data);
         break;
     }
@@ -246,7 +255,7 @@ QPoint patch::goToOffset(QString offset)
     qDebug() << "gotoof:" << temp;
     if(temp.at(0).toLatin1() == '3')
     {
-         //qDebug() << "temp: " << temp;
+        //qDebug() << "temp: " << temp;
         //temp[0] = temp[1];
         temp = temp.remove(0, 1);
         qDebug() << "temp: " << temp;
@@ -263,10 +272,10 @@ QPoint patch::goToOffset(QString offset)
     //qDebug() << temp_y.toInt();
     //qDebug() <<  (QString::number((static_cast<int>(offset.at(offset.length()-1).toLatin1())), 16).at(1).toLatin1());
     //temp_x = QByteArray::fromHex(temp_x);
-  //  qDebug() << temp_x;
+    //  qDebug() << temp_x;
     //int tempi = -48;
     //temp_x.setNum(tempi, 10);
-   // qDebug() << QString::fromStdString(temp_x.toStdString()).toInt();
+    // qDebug() << QString::fromStdString(temp_x.toStdString()).toInt();
     qDebug() << temp.toInt(0, 10) << ": " <<  temp_y.toInt(0, 10);
     return QPoint(temp_y.toInt(0, 10), temp.toInt());
 
