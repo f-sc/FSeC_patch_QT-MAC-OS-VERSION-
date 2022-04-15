@@ -8,20 +8,18 @@ QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = leran
+TARGET = FsecPatch
 TEMPLATE = app
 
 
 SOURCES += main.cpp\
     HexTableModel.cpp \
         mainwindow.cpp \
-    patch.cpp \
     update.cpp
 
 HEADERS  += mainwindow.h \
     HexTableModel.h \
     HexTableView.h \
-    patch.h \
     update.h
 
 FORMS    += mainwindow.ui

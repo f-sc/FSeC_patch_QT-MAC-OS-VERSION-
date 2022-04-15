@@ -12,7 +12,7 @@
 #include <QPoint>
 #include <QDialog>
 #include <QInputDialog>
-#include "patch.h"
+#include <QMessageBox>
 
 #include <cmath>
 
@@ -26,22 +26,12 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     QPoint m_ptDragPos;
-    void startDrag()
-    {
-        QMimeData* pmimeData = new QMimeData;
-        pmimeData->setText("test");
-
-        QDrag* drag = new QDrag(this);
-        drag->setMimeData(pmimeData);
-      //  drag->setPixmap(QPixmap(":/im"));
-        drag->exec();
-    }
     QShortcut *undo_redo_shortcut;
     bool backup_mode;
+    void startDrag();
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
 protected:
     virtual void mousePressEvent(QMouseEvent* pe);
     virtual void mouseMoveEvent(QMouseEvent* pe);
@@ -49,12 +39,7 @@ protected:
     virtual void dropEvent(QDropEvent *event);
 
 private slots:
-
-    void on_go_search_clicked();
-
-    void on_data_t_activated(const QString &arg1);
-
-    void load_file(QString filename);
+    void LoadFile(QString filename);
 
     void on_tbOpenFile_clicked();
 
@@ -62,13 +47,12 @@ private slots:
     void on_pbRevertSelected_clicked();
 
     void on_tbGoToOffset_clicked();
+    void dataTableSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
 private:
     Ui::MainWindow *ui;
-    patch *manager;
     bool isSearched;
     QList<QPoint> values;
-
     HexTableModel* m_hexDataViewModel;
 public slots:
     void UpdateEditHistory(const QModelIndex& index);

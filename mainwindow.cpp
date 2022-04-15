@@ -11,22 +11,30 @@ QString toHexS(int value)
     return temp;
 }
 
+void MainWindow::startDrag()
+{
+    QMimeData* pmimeData = new QMimeData;
+    pmimeData->setText("inputData");
+
+    QDrag* drag = new QDrag(this);
+    drag->setMimeData(pmimeData);
+    drag->exec();
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     setAcceptDrops(true);
-    manager = new patch();
-    //undo_redo_shortcut = new QShortcut(QKeySequence("Ctrl+Z"), this, SLOT(makeBackup()), SLOT(makeBackup()), Qt::WindowShortcut);
-    //ui->tbSearch->setHidden(true);
-    ui->tbConvert->setHidden(true);
-    // ui->data_table->verticalHeader()->setVisible(true);
     isSearched = false;
 
     m_hexDataViewModel = new HexTableModel;
     connect(m_hexDataViewModel, SIGNAL(reactHistoryUpdate(QModelIndex)), SLOT(UpdateEditHistory(QModelIndex)));
     ui->viewDataTable->setModel(m_hexDataViewModel);
+
+    connect(ui->viewDataTable->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+            SLOT(dataTableSelectionChanged(const QItemSelection &, const QItemSelection &)));
 }
 
 MainWindow::~MainWindow()
@@ -34,7 +42,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::load_file(QString filename)
+void MainWindow::LoadFile(QString filename)
 {
     QFile file(filename);
     QMessageBox msg;
@@ -56,102 +64,10 @@ void MainWindow::load_file(QString filename)
         }
         file.close();
         m_hexDataViewModel->Reflesh();
-        qDebug() << "File opened";
-        msg.setText("File opened");
     }
     else
     {
         msg.setText("<font color='white'>Error while opening file "+ file.fileName() +"</font>");
-    }
-    /* manager->data_loaded = false;
-    ui->data_table->clear();
-    manager->load_file(filename);
-    QList<item> tempDataItems = manager->all_items();
-    ui->data_table->setColumnCount(16);
-    ui->data_table->setRowCount(tempDataItems.length()/16);
-    for(int i = 0; i < ui->data_table->rowCount(); i++)
-    {
-        ui->data_table->setVerticalHeaderItem(i, new QTableWidgetItem("0x"+toHexS(i)));
-    }
-    for(int i = 0; i < ui->data_table->columnCount(); i++)
-    {
-        ui->data_table->setHorizontalHeaderItem(i, new QTableWidgetItem("0x"+toHexS(i)));
-    }
-    for(int i = 0; i < 16; i++)
-    {
-        ui->data_table->setColumnWidth(i, 45);
-    }
-    // qDebug() << temp.length();
-    int temp_counter = 0;
-    ui->progress_saveload->setValue(0);
-    for(auto t: tempDataItems)
-    {
-        temp_counter++;
-        ui->progress_saveload->setValue(temp_counter/100);
-        ui->data_table->setItem(t.offset.y(), t.offset.x(), new QTableWidgetItem(QString::fromUtf8(t.item_t)));
-    }*/
-}
-
-/*void MainWindow::on_toolButton_5_clicked()
-{
-    ui->tbConvert->setVisible(false);
-    switch(ui->tbSearch->isHidden())
-    {
-    case true:
-        ui->tbSearch->setHidden(false);
-        break;
-    case false:
-        ui->tbSearch->setHidden(true);
-        break;
-    }
-}*/
-
-/*void MainWindow::on_toolButton_6_clicked()
-{
-    ui->tbSearch->setVisible(false);
-    if(ui->tbConvert->isHidden()) {
-        ui->tbConvert->setHidden(false);
-    } else {
-        ui->tbConvert->setHidden(true);
-    }
-}*/
-
-void MainWindow::on_go_search_clicked()
-{
-    if(isSearched == false)
-    {
-        /*  manager->search();
-     values.clear();
-     manager->search(ui->data_v->text().toUtf8());
-     values = manager->sea();*/
-        isSearched = true;
-    }
-    if(values.length()>0)
-    {
-        QPoint temp = values.first();
-
-        // ui->data_table->setCurrentCell(temp.y(), temp.x());
-        qDebug() << "Cell: " << temp.x() << " : " << temp.y();
-        values.removeFirst();
-    }
-    else
-    {
-        //manager->tbSearch_upd();
-        values.clear();
-        isSearched = false;
-    }
-}
-
-void MainWindow::on_data_t_activated(const QString &arg1)
-{
-    //ui->tbConvert->setText(ui->data_table->currentItem()->data(0).toString());
-    if(arg1 == "Hex")
-    {
-        // ui->tbConvert->setText(manager->tbConvert(ui->data_table->currentItem()->data(0).toString().toUtf8(), data_type::hex16));
-    }
-    else if(arg1 == "Char")
-    {
-        // ui->tbConvert->setText(manager->tbConvert(ui->data_table->currentItem()->data(0).toByteArray(), data_type::strS));
     }
 }
 
@@ -190,13 +106,13 @@ void MainWindow::dropEvent(QDropEvent *event)
     QString name = event->mimeData()->text();
     name.remove(0, 7);
     ui->fil_name_label->setText(name);
-    load_file(name);
+    LoadFile(name);
 }
 
 void MainWindow::on_tbOpenFile_clicked()
 {
     ui->fil_name_label->setText(QFileDialog::getOpenFileName(this, "Open File"));
-    load_file(ui->fil_name_label->text());
+    LoadFile(ui->fil_name_label->text());
 }
 
 void MainWindow::on_tbSaveFile_clicked()
@@ -208,7 +124,6 @@ void MainWindow::on_tbSaveFile_clicked()
                 if(m_hexDataViewModel->data(m_hexDataViewModel->index(row, col), Qt::AccessibleTextRole).toBool()) {
                     outFile.seek((row * 16) - col);
                     outFile.write(QByteArray::fromHex(m_hexDataViewModel->data(m_hexDataViewModel->index(row, col), Qt::DisplayRole).toByteArray()));
-                    qDebug() << "We'll save: " << m_hexDataViewModel->data(m_hexDataViewModel->index(row, col), Qt::DisplayRole);
                 }
             }
         }
@@ -247,10 +162,19 @@ void MainWindow::on_tbGoToOffset_clicked()
     bool convStatus = false;
     uint offset = offsetValue.toUInt(&convStatus, 16);
     double tempX = 0.0;
-    //qDebug() << "Coll: " << offset << " : " << (std::modf(double((double)offset / 16.0), &tempX) * 16) << " : " << offset / 16;
     if(convStatus) {
         ui->viewDataTable->selectionModel()->clearSelection();
         ui->viewDataTable->selectionModel()->select(m_hexDataViewModel->index((offset / 16), (std::modf(double((double)offset / 16.0), &tempX) * 16)), QItemSelectionModel::Select);
+    }
+}
+
+void MainWindow::dataTableSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    ui->listByteInfo->clear();
+    if( selected.indexes().length() > 0) {
+        QString selectedByte = selected.indexes().first().data(Qt::DisplayRole).toString();
+        ui->listByteInfo->addItem("Hex: " + selectedByte);
+        ui->listByteInfo->addItem("Real: " + QByteArray::fromHex(selectedByte.toLocal8Bit()));
     }
 }
 

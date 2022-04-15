@@ -2,6 +2,7 @@
 #define HEXTABLEMODEL_H
 
 #include <QAbstractTableModel>
+#include <QItemSelection>
 #include <QMap>
 
 #include <QDebug>
@@ -30,6 +31,7 @@ public:
     void setApproxLinesCount(const int count);
 signals:
     void reactHistoryUpdate(const QModelIndex& index);
+    //void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
 };
 
