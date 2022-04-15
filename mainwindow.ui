@@ -19,6 +19,9 @@
   <property name="windowTitle">
    <string>FSeC Patch</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(38, 39, 40)</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -53,12 +56,12 @@
           </property>
           <property name="icon">
            <iconset>
-            <normaloff>:/new/prefix1/img/open.bmp</normaloff>:/new/prefix1/img/open.bmp</iconset>
+            <normaloff>res/iconOpen.png</normaloff>res/iconOpen.png</iconset>
           </property>
           <property name="iconSize">
            <size>
-            <width>29</width>
-            <height>27</height>
+            <width>50</width>
+            <height>50</height>
            </size>
           </property>
          </widget>
@@ -81,19 +84,45 @@
            <string>Save</string>
           </property>
           <property name="icon">
-           <iconset>
-            <normaloff>:/new/prefix1/img/save.bmp</normaloff>:/new/prefix1/img/save.bmp</iconset>
+           <iconset resource="resc.qrc">
+            <normaloff>:/new/prefix1/res/iconSave.png</normaloff>:/new/prefix1/res/iconSave.png</iconset>
           </property>
           <property name="iconSize">
            <size>
-            <width>29</width>
-            <height>27</height>
+            <width>50</width>
+            <height>50</height>
            </size>
           </property>
          </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_7">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Minimum</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>10</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(255, 255, 255)</string>
+          </property>
+          <property name="text">
+           <string>Go to offset(e.g 0x17):</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_8">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -117,7 +146,7 @@
            </sizepolicy>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color:white</string>
+           <string notr="true">background-color: rgb(150, 150, 150)</string>
           </property>
          </widget>
         </item>
@@ -155,13 +184,13 @@
            <string>Search</string>
           </property>
           <property name="icon">
-           <iconset>
-            <normaloff>:/new/prefix1/img/search.png</normaloff>:/new/prefix1/img/search.png</iconset>
+           <iconset resource="resc.qrc">
+            <normaloff>:/new/prefix1/res/iconGoto.png</normaloff>:/new/prefix1/res/iconGoto.png</iconset>
           </property>
           <property name="iconSize">
            <size>
-            <width>29</width>
-            <height>27</height>
+            <width>50</width>
+            <height>50</height>
            </size>
           </property>
          </widget>
@@ -220,14 +249,29 @@
        <layout class="QHBoxLayout" name="layoutContents">
         <item>
          <widget class="QTableView" name="viewDataTable">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(170, 170, 170)</string>
+          </property>
           <property name="sizeAdjustPolicy">
            <enum>QAbstractScrollArea::AdjustToContents</enum>
           </property>
           <attribute name="horizontalHeaderCascadingSectionResizes">
-           <bool>true</bool>
+           <bool>false</bool>
           </attribute>
           <attribute name="horizontalHeaderDefaultSectionSize">
            <number>40</number>
+          </attribute>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderMinimumSectionSize">
+           <number>30</number>
           </attribute>
          </widget>
         </item>
@@ -252,7 +296,7 @@
           <item>
            <widget class="QLabel" name="lblByteInfoDesc">
             <property name="styleSheet">
-             <string notr="true"/>
+             <string notr="true">color: rgb(255, 255, 255)</string>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Byte info:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -270,12 +314,15 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(170, 170, 170)</string>
+            </property>
            </widget>
           </item>
           <item>
            <widget class="QLabel" name="lblHistoryDesc">
             <property name="styleSheet">
-             <string notr="true"/>
+             <string notr="true">color: rgb(255, 255, 255)</string>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Change history:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -294,14 +341,23 @@
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color:white</string>
+             <string notr="true">background-color: rgb(170, 170, 170)</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="pbRevertSelected">
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(255, 255, 255);</string>
+            </property>
             <property name="text">
              <string>Revert Selected</string>
+            </property>
+            <property name="flat">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -315,24 +371,11 @@
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <widget class="QLabel" name="fil_name_label">
+        <property name="styleSheet">
+         <string notr="true">color: rgb(255, 255, 255)</string>
+        </property>
         <property name="text">
          <string>No file opened</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QProgressBar" name="progress_saveload">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color:black</string>
-        </property>
-        <property name="value">
-         <number>0</number>
         </property>
        </widget>
       </item>
@@ -342,7 +385,9 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="resc.qrc"/>
+ </resources>
  <connections/>
  <slots>
   <signal>sonClick()</signal>

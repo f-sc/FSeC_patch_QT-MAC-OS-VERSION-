@@ -18,7 +18,6 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QListWidget>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTableView>
@@ -38,6 +37,8 @@ public:
     QToolButton *tbOpenFile;
     QToolButton *tbSaveFile;
     QSpacerItem *horizontalSpacer_7;
+    QLabel *label;
+    QSpacerItem *horizontalSpacer_8;
     QLineEdit *editOffsetText;
     QSpacerItem *horizontalSpacer_5;
     QToolButton *tbGoToOffset;
@@ -55,7 +56,6 @@ public:
     QPushButton *pbRevertSelected;
     QHBoxLayout *horizontalLayout;
     QLabel *fil_name_label;
-    QProgressBar *progress_saveload;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -63,6 +63,7 @@ public:
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(906, 548);
         MainWindow->setMinimumSize(QSize(906, 548));
+        MainWindow->setStyleSheet(QString::fromUtf8("background-color: rgb(38, 39, 40)"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -90,9 +91,9 @@ public:
         tbOpenFile->setSizePolicy(sizePolicy1);
         tbOpenFile->setMinimumSize(QSize(50, 50));
         QIcon icon;
-        icon.addFile(QString::fromUtf8(":/new/prefix1/img/open.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(QString::fromUtf8("res/iconOpen.png"), QSize(), QIcon::Normal, QIcon::Off);
         tbOpenFile->setIcon(icon);
-        tbOpenFile->setIconSize(QSize(29, 27));
+        tbOpenFile->setIconSize(QSize(50, 50));
 
         layoutHeader->addWidget(tbOpenFile);
 
@@ -102,15 +103,25 @@ public:
         tbSaveFile->setSizePolicy(sizePolicy1);
         tbSaveFile->setMinimumSize(QSize(50, 50));
         QIcon icon1;
-        icon1.addFile(QString::fromUtf8(":/new/prefix1/img/save.bmp"), QSize(), QIcon::Normal, QIcon::Off);
+        icon1.addFile(QString::fromUtf8(":/new/prefix1/res/iconSave.png"), QSize(), QIcon::Normal, QIcon::Off);
         tbSaveFile->setIcon(icon1);
-        tbSaveFile->setIconSize(QSize(29, 27));
+        tbSaveFile->setIconSize(QSize(50, 50));
 
         layoutHeader->addWidget(tbSaveFile);
 
         horizontalSpacer_7 = new QSpacerItem(10, 20, QSizePolicy::Minimum, QSizePolicy::Minimum);
 
         layoutHeader->addItem(horizontalSpacer_7);
+
+        label = new QLabel(centralWidget);
+        label->setObjectName(QString::fromUtf8("label"));
+        label->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255)"));
+
+        layoutHeader->addWidget(label);
+
+        horizontalSpacer_8 = new QSpacerItem(10, 20, QSizePolicy::Minimum, QSizePolicy::Minimum);
+
+        layoutHeader->addItem(horizontalSpacer_8);
 
         editOffsetText = new QLineEdit(centralWidget);
         editOffsetText->setObjectName(QString::fromUtf8("editOffsetText"));
@@ -119,7 +130,7 @@ public:
         sizePolicy2.setVerticalStretch(0);
         sizePolicy2.setHeightForWidth(editOffsetText->sizePolicy().hasHeightForWidth());
         editOffsetText->setSizePolicy(sizePolicy2);
-        editOffsetText->setStyleSheet(QString::fromUtf8("background-color:white"));
+        editOffsetText->setStyleSheet(QString::fromUtf8("background-color: rgb(150, 150, 150)"));
 
         layoutHeader->addWidget(editOffsetText);
 
@@ -133,9 +144,9 @@ public:
         tbGoToOffset->setSizePolicy(sizePolicy1);
         tbGoToOffset->setMinimumSize(QSize(50, 50));
         QIcon icon2;
-        icon2.addFile(QString::fromUtf8(":/new/prefix1/img/search.png"), QSize(), QIcon::Normal, QIcon::Off);
+        icon2.addFile(QString::fromUtf8(":/new/prefix1/res/iconGoto.png"), QSize(), QIcon::Normal, QIcon::Off);
         tbGoToOffset->setIcon(icon2);
-        tbGoToOffset->setIconSize(QSize(29, 27));
+        tbGoToOffset->setIconSize(QSize(50, 50));
 
         layoutHeader->addWidget(tbGoToOffset);
 
@@ -159,9 +170,13 @@ public:
         layoutContents->setObjectName(QString::fromUtf8("layoutContents"));
         viewDataTable = new QTableView(centralWidget);
         viewDataTable->setObjectName(QString::fromUtf8("viewDataTable"));
+        viewDataTable->setMinimumSize(QSize(0, 0));
+        viewDataTable->setStyleSheet(QString::fromUtf8("background-color: rgb(170, 170, 170)"));
         viewDataTable->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-        viewDataTable->horizontalHeader()->setCascadingSectionResizes(true);
+        viewDataTable->horizontalHeader()->setCascadingSectionResizes(false);
         viewDataTable->horizontalHeader()->setDefaultSectionSize(40);
+        viewDataTable->horizontalHeader()->setStretchLastSection(false);
+        viewDataTable->verticalHeader()->setMinimumSectionSize(30);
 
         layoutContents->addWidget(viewDataTable);
 
@@ -174,7 +189,7 @@ public:
         lblChanges->setObjectName(QString::fromUtf8("lblChanges"));
         lblByteInfoDesc = new QLabel(centralWidget);
         lblByteInfoDesc->setObjectName(QString::fromUtf8("lblByteInfoDesc"));
-        lblByteInfoDesc->setStyleSheet(QString::fromUtf8(""));
+        lblByteInfoDesc->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255)"));
         lblByteInfoDesc->setAlignment(Qt::AlignCenter);
 
         lblChanges->addWidget(lblByteInfoDesc);
@@ -186,12 +201,13 @@ public:
         sizePolicy3.setVerticalStretch(0);
         sizePolicy3.setHeightForWidth(listByteInfo->sizePolicy().hasHeightForWidth());
         listByteInfo->setSizePolicy(sizePolicy3);
+        listByteInfo->setStyleSheet(QString::fromUtf8("background-color: rgb(170, 170, 170)"));
 
         lblChanges->addWidget(listByteInfo);
 
         lblHistoryDesc = new QLabel(centralWidget);
         lblHistoryDesc->setObjectName(QString::fromUtf8("lblHistoryDesc"));
-        lblHistoryDesc->setStyleSheet(QString::fromUtf8(""));
+        lblHistoryDesc->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255)"));
         lblHistoryDesc->setAlignment(Qt::AlignCenter);
 
         lblChanges->addWidget(lblHistoryDesc);
@@ -203,12 +219,15 @@ public:
         sizePolicy4.setVerticalStretch(0);
         sizePolicy4.setHeightForWidth(listLastEdit->sizePolicy().hasHeightForWidth());
         listLastEdit->setSizePolicy(sizePolicy4);
-        listLastEdit->setStyleSheet(QString::fromUtf8("background-color:white"));
+        listLastEdit->setStyleSheet(QString::fromUtf8("background-color: rgb(170, 170, 170)"));
 
         lblChanges->addWidget(listLastEdit);
 
         pbRevertSelected = new QPushButton(centralWidget);
         pbRevertSelected->setObjectName(QString::fromUtf8("pbRevertSelected"));
+        pbRevertSelected->setAutoFillBackground(false);
+        pbRevertSelected->setStyleSheet(QString::fromUtf8("background-color: rgb(255, 255, 255);"));
+        pbRevertSelected->setFlat(false);
 
         lblChanges->addWidget(pbRevertSelected);
 
@@ -226,17 +245,9 @@ public:
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         fil_name_label = new QLabel(centralWidget);
         fil_name_label->setObjectName(QString::fromUtf8("fil_name_label"));
+        fil_name_label->setStyleSheet(QString::fromUtf8("color: rgb(255, 255, 255)"));
 
         horizontalLayout->addWidget(fil_name_label);
-
-        progress_saveload = new QProgressBar(centralWidget);
-        progress_saveload->setObjectName(QString::fromUtf8("progress_saveload"));
-        sizePolicy2.setHeightForWidth(progress_saveload->sizePolicy().hasHeightForWidth());
-        progress_saveload->setSizePolicy(sizePolicy2);
-        progress_saveload->setStyleSheet(QString::fromUtf8("background-color:black"));
-        progress_saveload->setValue(0);
-
-        horizontalLayout->addWidget(progress_saveload);
 
 
         verticalLayout->addLayout(horizontalLayout);
@@ -253,6 +264,7 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "FSeC Patch", nullptr));
         tbOpenFile->setText(QApplication::translate("MainWindow", "Open", nullptr));
         tbSaveFile->setText(QApplication::translate("MainWindow", "Save", nullptr));
+        label->setText(QApplication::translate("MainWindow", "Go to offset(e.g 0x17):", nullptr));
         tbGoToOffset->setText(QApplication::translate("MainWindow", "Search", nullptr));
         lblByteInfoDesc->setText(QApplication::translate("MainWindow", "<html><head/><body><p>Byte info:</p></body></html>", nullptr));
         lblHistoryDesc->setText(QApplication::translate("MainWindow", "<html><head/><body><p>Change history:</p></body></html>", nullptr));

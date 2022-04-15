@@ -37,6 +37,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent* pe);
     virtual void dragEnterEvent(QDragEnterEvent *event);
     virtual void dropEvent(QDropEvent *event);
+    virtual void resizeEvent(QResizeEvent* event);
 
 private slots:
     void LoadFile(QString filename);

@@ -25,6 +25,10 @@ QVariant HexTableModel::data(const QModelIndex &index, int role) const
             return m_DataStorage[index].m_isChanged;
         } else if(role == Qt::ToolTipRole) {
             return m_DataStorage[index].m_InitialValue;
+        } else if(role == Qt::BackgroundRole) {
+            return QVariant(QColor(70, 70, 70));
+        } else if(role == Qt::TextColorRole) {
+            return QVariant(QColor(Qt::white));
         }
     }
     return QVariant();

@@ -109,6 +109,12 @@ void MainWindow::dropEvent(QDropEvent *event)
     LoadFile(name);
 }
 
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+    ui->viewDataTable->horizontalHeader()->setMinimumSectionSize(ui->viewDataTable->width() / 16);
+}
+
 void MainWindow::on_tbOpenFile_clicked()
 {
     ui->fil_name_label->setText(QFileDialog::getOpenFileName(this, "Open File"));

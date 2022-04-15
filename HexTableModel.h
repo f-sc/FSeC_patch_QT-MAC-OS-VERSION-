@@ -4,6 +4,7 @@
 #include <QAbstractTableModel>
 #include <QItemSelection>
 #include <QMap>
+#include <QColor>
 
 #include <QDebug>
 
