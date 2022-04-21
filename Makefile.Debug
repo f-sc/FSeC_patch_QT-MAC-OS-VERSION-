@@ -19,13 +19,13 @@ CXXFLAGS      = -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStri
 INCPATH       = -I. -IC:\Qt\5.12.5\msvc2015_64\include -IC:\Qt\5.12.5\msvc2015_64\include\QtWidgets -IC:\Qt\5.12.5\msvc2015_64\include\QtGui -IC:\Qt\5.12.5\msvc2015_64\include\QtANGLE -IC:\Qt\5.12.5\msvc2015_64\include\QtNetwork -IC:\Qt\5.12.5\msvc2015_64\include\QtCore -Idebug -I. -I/include -IC:\Qt\5.12.5\msvc2015_64\mkspecs\win32-msvc 
 LINKER        = link
 LFLAGS        = /NOLOGO /DYNAMICBASE /NXCOMPAT /DEBUG /SUBSYSTEM:WINDOWS "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'"
-LIBS          = C:\Qt\5.12.5\msvc2015_64\lib\Qt5Widgetsd.lib C:\Qt\5.12.5\msvc2015_64\lib\Qt5Guid.lib C:\Qt\5.12.5\msvc2015_64\lib\Qt5Networkd.lib C:\Qt\5.12.5\msvc2015_64\lib\Qt5Cored.lib  C:\Qt\5.12.5\msvc2015_64\lib\qtmaind.lib /LIBPATH:C:\openssl\lib /LIBPATH:C:\Utils\my_sql\mysql-5.6.11-winx64\lib /LIBPATH:C:\Utils\postgresql\pgsql\lib shell32.lib 
+LIBS          = C:\Qt\5.12.5\msvc2015_64\lib\Qt5Widgetsd.lib C:\Qt\5.12.5\msvc2015_64\lib\Qt5Guid.lib C:\Qt\5.12.5\msvc2015_64\lib\Qt5Networkd.lib C:\Qt\5.12.5\msvc2015_64\lib\Qt5Cored.lib debug\FsecPatch_resource.res  C:\Qt\5.12.5\msvc2015_64\lib\qtmaind.lib /LIBPATH:C:\openssl\lib /LIBPATH:C:\Utils\my_sql\mysql-5.6.11-winx64\lib /LIBPATH:C:\Utils\postgresql\pgsql\lib shell32.lib 
 QMAKE         = C:\Qt\5.12.5\msvc2015_64\bin\qmake.exe
 IDC           = idc
 IDL           = midl
 ZIP           = zip -r -9
 DEF_FILE      = 
-RES_FILE      = 
+RES_FILE      = debug\FsecPatch_resource.res
 COPY          = copy /y
 SED           = $(QMAKE) -install sed
 COPY_FILE     = copy /y
@@ -122,11 +122,14 @@ DESTDIR_TARGET = debug\FsecPatch.exe
 first: all
 all: Makefile.Debug  debug\FsecPatch.exe
 
-debug\FsecPatch.exe: C:\Qt\5.12.5\msvc2015_64\lib\Qt5Widgetsd.lib C:\Qt\5.12.5\msvc2015_64\lib\Qt5Guid.lib C:\Qt\5.12.5\msvc2015_64\lib\Qt5Networkd.lib C:\Qt\5.12.5\msvc2015_64\lib\Qt5Cored.lib C:\Qt\5.12.5\msvc2015_64\lib\qtmaind.lib ui_mainwindow.h $(OBJECTS) 
+debug\FsecPatch.exe: C:\Qt\5.12.5\msvc2015_64\lib\Qt5Widgetsd.lib C:\Qt\5.12.5\msvc2015_64\lib\Qt5Guid.lib C:\Qt\5.12.5\msvc2015_64\lib\Qt5Networkd.lib C:\Qt\5.12.5\msvc2015_64\lib\Qt5Cored.lib C:\Qt\5.12.5\msvc2015_64\lib\qtmaind.lib ui_mainwindow.h $(OBJECTS) debug\FsecPatch_resource.res
 	$(LINKER) $(LFLAGS) /MANIFEST:embed /OUT:$(DESTDIR_TARGET) @<<
 debug\main.obj debug\HexTableModel.obj debug\mainwindow.obj debug\update.obj debug\qrc_resc.obj debug\moc_mainwindow.obj debug\moc_HexTableModel.obj
 $(LIBS)
 <<
+
+debug\FsecPatch_resource.res: FsecPatch_resource.rc
+	rc /NOLOGO -D_DEBUG $(DEFINES) -fo debug\FsecPatch_resource.res FsecPatch_resource.rc
 
 qmake: FORCE
 	@$(QMAKE) -o Makefile.Debug leran.pro -spec win32-msvc "CONFIG+=debug"
@@ -139,6 +142,7 @@ dist:
 clean: compiler_clean 
 	-$(DEL_FILE) debug\main.obj debug\HexTableModel.obj debug\mainwindow.obj debug\update.obj debug\qrc_resc.obj debug\moc_mainwindow.obj debug\moc_HexTableModel.obj
 	-$(DEL_FILE) debug\FsecPatch.vc.pdb debug\FsecPatch.ilk debug\FsecPatch.idb
+	-$(DEL_FILE) debug\FsecPatch_resource.res
 
 distclean: clean 
 	-$(DEL_FILE) .qmake.stash debug\FsecPatch.pdb
@@ -159,7 +163,13 @@ compiler_rcc_make_all: debug\qrc_resc.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) debug\qrc_resc.cpp
 debug\qrc_resc.cpp: resc.qrc \
-		C:\Qt\5.12.5\msvc2015_64\bin\rcc.exe
+		C:\Qt\5.12.5\msvc2015_64\bin\rcc.exe \
+		res\iconOpen.png \
+		res\iconSave.png \
+		res\logo.png \
+		res\iconSearch.png \
+		res\exeIcon.ico \
+		res\iconGoto.png
 	C:\Qt\5.12.5\msvc2015_64\bin\rcc.exe -name resc resc.qrc -o debug\qrc_resc.cpp
 
 compiler_moc_predefs_make_all: debug\moc_predefs.h
@@ -310,6 +320,7 @@ debug\moc_mainwindow.cpp: mainwindow.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QItemSelection \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\qitemselectionmodel.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QMap \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\QColor \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QDebug \
 		debug\moc_predefs.h \
 		C:\Qt\5.12.5\msvc2015_64\bin\moc.exe
@@ -384,6 +395,12 @@ debug\moc_HexTableModel.cpp: HexTableModel.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QItemSelection \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\qitemselectionmodel.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QMap \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\QColor \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\qrgba64.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QDebug \
 		debug\moc_predefs.h \
 		C:\Qt\5.12.5\msvc2015_64\bin\moc.exe
@@ -551,6 +568,7 @@ debug\main.obj: main.cpp mainwindow.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QItemSelection \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\qitemselectionmodel.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QMap \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\QColor \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QDebug \
 		C:\Qt\5.12.5\msvc2015_64\include\QtWidgets\QApplication \
 		C:\Qt\5.12.5\msvc2015_64\include\QtWidgets\qapplication.h \
@@ -648,6 +666,12 @@ debug\HexTableModel.obj: HexTableModel.cpp HexTableModel.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QItemSelection \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\qitemselectionmodel.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QMap \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\QColor \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\qrgba64.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QDebug
 
 debug\mainwindow.obj: mainwindow.cpp mainwindow.h \
@@ -789,6 +813,7 @@ debug\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QItemSelection \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\qitemselectionmodel.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QMap \
+		C:\Qt\5.12.5\msvc2015_64\include\QtGui\QColor \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QDebug \
 		ui_mainwindow.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtCore\QVariant \
@@ -825,8 +850,6 @@ debug\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtWidgets\QListWidget \
 		C:\Qt\5.12.5\msvc2015_64\include\QtWidgets\qlistwidget.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtWidgets\qlistview.h \
-		C:\Qt\5.12.5\msvc2015_64\include\QtWidgets\QProgressBar \
-		C:\Qt\5.12.5\msvc2015_64\include\QtWidgets\qprogressbar.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtWidgets\QPushButton \
 		C:\Qt\5.12.5\msvc2015_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.12.5\msvc2015_64\include\QtWidgets\qabstractbutton.h \

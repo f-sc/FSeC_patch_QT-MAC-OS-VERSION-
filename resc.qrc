@@ -4,5 +4,7 @@
         <file>res/iconSave.png</file>
         <file>res/iconSearch.png</file>
         <file>res/iconGoto.png</file>
+        <file>res/logo.png</file>
+        <file>res/exeIcon.ico</file>
     </qresource>
 </RCC>

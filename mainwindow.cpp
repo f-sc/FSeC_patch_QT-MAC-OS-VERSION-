@@ -35,6 +35,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->viewDataTable->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
             SLOT(dataTableSelectionChanged(const QItemSelection &, const QItemSelection &)));
+
+    m_updateManager = QSharedPointer<WebUpdate>(new WebUpdate);
+
+    m_updateManager->InitializeConnection();
+    ui->lblLatestVersion->setText(m_updateManager->GetLatestProductVersion());
 }
 
 MainWindow::~MainWindow()
@@ -128,7 +133,8 @@ void MainWindow::on_tbSaveFile_clicked()
         for(int row = 0; row < m_hexDataViewModel->rowCount(); row++) {
             for(int col = 0; col < m_hexDataViewModel->columnCount(); col++) {
                 if(m_hexDataViewModel->data(m_hexDataViewModel->index(row, col), Qt::AccessibleTextRole).toBool()) {
-                    outFile.seek((row * 16) - col);
+                    outFile.seek(abs((row * 16) - col));
+                    qDebug() << "Seek: " << (row * 16) - col;
                     outFile.write(QByteArray::fromHex(m_hexDataViewModel->data(m_hexDataViewModel->index(row, col), Qt::DisplayRole).toByteArray()));
                 }
             }
@@ -182,5 +188,11 @@ void MainWindow::dataTableSelectionChanged(const QItemSelection &selected, const
         ui->listByteInfo->addItem("Hex: " + selectedByte);
         ui->listByteInfo->addItem("Real: " + QByteArray::fromHex(selectedByte.toLocal8Bit()));
     }
+}
+
+
+void MainWindow::on_tbCheckUpdates_clicked()
+{
+    m_updateManager->GetLatestProductVersion();
 }
 

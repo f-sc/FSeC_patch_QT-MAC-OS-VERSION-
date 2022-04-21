@@ -13,10 +13,12 @@
 #include <QDialog>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QSharedPointer>
 
 #include <cmath>
 
 #include "HexTableModel.h"
+#include "WebUpdateTools.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,8 +28,8 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     QPoint m_ptDragPos;
-    QShortcut *undo_redo_shortcut;
-    bool backup_mode;
+    QShortcut *m_undoRedoShortcut;
+    QSharedPointer<WebUpdate> m_updateManager;
     void startDrag();
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -38,18 +40,14 @@ protected:
     virtual void dragEnterEvent(QDragEnterEvent *event);
     virtual void dropEvent(QDropEvent *event);
     virtual void resizeEvent(QResizeEvent* event);
-
 private slots:
     void LoadFile(QString filename);
-
     void on_tbOpenFile_clicked();
-
     void on_tbSaveFile_clicked();
     void on_pbRevertSelected_clicked();
-
     void on_tbGoToOffset_clicked();
     void dataTableSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
-
+    void on_tbCheckUpdates_clicked();
 private:
     Ui::MainWindow *ui;
     bool isSearched;
